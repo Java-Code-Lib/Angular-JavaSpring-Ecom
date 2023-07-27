@@ -1,9 +1,7 @@
 package com.stradtkt.ecommercejavaangular.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,17 +10,17 @@ import java.util.Date;
 
 @Entity
 @Table(name = "product")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory category;
-    private Long id;
     @Column(name = "sku")
     private String sku;
     @Column(name = "name")
