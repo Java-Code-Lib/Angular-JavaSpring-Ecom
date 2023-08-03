@@ -1,8 +1,10 @@
 package com.stradtkt.ecommercejavaangular.config;
 
 
+import com.stradtkt.ecommercejavaangular.entity.Country;
 import com.stradtkt.ecommercejavaangular.entity.Product;
 import com.stradtkt.ecommercejavaangular.entity.ProductCategory;
+import com.stradtkt.ecommercejavaangular.entity.State;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +29,20 @@ public class DataRestConfig implements RepositoryRestConfigurer {
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
         HttpMethod[] httpMethods = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods))
-                .withCollectionExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods));
-        config.getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
-                .withItemExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods))
-                .withCollectionExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods));
+        disabledHttpMethods(Product.class, config, httpMethods);
+        disabledHttpMethods(ProductCategory.class, config, httpMethods);
+        disabledHttpMethods(Country.class, config, httpMethods);
+        disabledHttpMethods(State.class, config, httpMethods);
         exposeIds(config);
     }
+
+    private void disabledHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] httpMethods) {
+        config.getExposureConfiguration()
+                .forDomainType(theClass)
+                .withItemExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods))
+                .withCollectionExposure((metdata, httpMethods1) -> httpMethods1.disable(httpMethods));
+    }
+
 
     private void exposeIds(RepositoryRestConfiguration config) {
         Set<EntityType<?>> entityTypes = entityManager.getMetamodel().getEntities();
